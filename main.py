@@ -5,15 +5,26 @@ import re
 import hashlib
 import Queue
 import MySQLdb
+import sqlite3
 
 
 q = []
+dbtype = 'sqlite'
 working = ['http://library.svsu.edu/screens/sug.html']
 visited = []
+
 q.append({'destination':'http://www.svsu.edu/a-to-z-index/','orgin':'start'})
 #q.append({'destination':'http://csis.svsu.edu/~atmature','orgin':'start'})
 
-connection = MySQLdb.connect (host = "localhost", user = "user", passwd = "password", db = "broken_links")
+if dbtype == 'MySQL':
+    connection = MySQLdb.connect (host = "localhost", user = "user", passwd = "password", db = "broken_links")
+elif dbtype == 'sqlite':
+    connection = sqlite3.connect('links.db')    
+
+    #create Database
+    connection.execute('''CREATE  TABLE IF NOT EXISTS 'links' (idlinks INTEGER PRIMARY KEY AUTOINCREMENT, origin TEXT, destination TEXT, code INTEGER, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, text TEXT)''')
+    connection.execute('''CREATE  TABLE IF NOT EXISTS 'pages' (idpages INTEGER AUTO INCREMENT, hash TEXT, url TEXT ,timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    
 cursor = connection.cursor ()
 
 def processPage(url):
