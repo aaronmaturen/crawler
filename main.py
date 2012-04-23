@@ -6,6 +6,7 @@ import hashlib
 import Queue
 import MySQLdb
 
+
 q = []
 working = ['http://library.svsu.edu/screens/sug.html']
 visited = []
